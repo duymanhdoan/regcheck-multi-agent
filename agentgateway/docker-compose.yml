@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  agentgateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agentgateway
+    ports:
+      - "8080:8080"  # API Gateway mode
+      - "8081:8081"  # MCP Gateway mode
+    environment:
+      - SERVICE_NAME=agentgateway
+      - API_PORT=8080
+      - MCP_PORT=8081
+      - LOG_LEVEL=INFO
+      - AWS_REGION=ap-southeast-1
+      - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
+      - COGNITO_REGION=ap-southeast-1
+      - RBAC_ENABLED=true
+      - DEPARTMENT_ISOLATION=true
+      - APPLICATION_SERVICE_URL=http://application:8000
+      - MCP_FINANCE_URL=http://mcp-finance:8080
+      - MCP_HR_URL=http://mcp-hr:8080
+      - MCP_LEGAL_URL=http://mcp-legal:8080
+      - SERVICE_TOKEN=${SERVICE_TOKEN:-dev-service-token}
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8080/health', timeout=2.0)"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+networks:
+  app-network:
+    driver: bridge

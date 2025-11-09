@@ -1,0 +1,43 @@
+# RBAC Policies for AgentGateway
+# Defines role-based access control for MCP servers
+
+roles:
+  - name: finance
+    description: Finance department role
+    permissions:
+      - resource: mcp-finance-server
+        actions:
+          - read
+          - write
+  
+  - name: hr
+    description: Human Resources department role
+    permissions:
+      - resource: mcp-hr-server
+        actions:
+          - read
+          - write
+  
+  - name: legal
+    description: Legal department role
+    permissions:
+      - resource: mcp-legal-server
+        actions:
+          - read
+          - write
+  
+  - name: admin
+    description: Administrator role with access to all resources
+    permissions:
+      - resource: mcp-finance-server
+        actions:
+          - read
+          - write
+      - resource: mcp-hr-server
+        actions:
+          - read
+          - write
+      - resource: mcp-legal-server
+        actions:
+          - read
+          - write
